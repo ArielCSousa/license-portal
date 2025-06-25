@@ -1,0 +1,34 @@
+<ds-page-title
+  *ngIf="!produtoSelecionado"
+  class="titulo-licencas"
+  [title]="'Seleção de produto'"
+></ds-page-title>
+<div class="titulo-com-produto" *ngIf="produtoSelecionado">
+  <h3>Solicitação de Licença - {{ produtoSelecionado }}</h3>
+</div>
+
+<!-- *ngIf="!produtoSelecionado" -->
+<div class="selecao-produto">
+  <label for="produtoSelect">Produto:</label>
+
+  <select
+    id="produtoSelect"
+    [(ngModel)]="produtoSelecionado"
+    (change)="onProdutoChange()"
+  >
+    <option [ngValue]="null" disabled>Selecione um produto</option>
+    <option *ngFor="let produto of produtos" [value]="produto">
+      {{ produto }}
+    </option>
+  </select>
+</div>
+
+<div class="titulo-com-produto" *ngIf="produtoSelecionado">
+  <!-- <h4>Solicitação de Licença - {{ produtoSelecionado }}</h4> -->
+  <app-solicitar-licenca
+    [cnpjFaturamento]="cnpjFaturamento"
+    [dadosCopia]="dadosCopia"
+    [produto]="produtoSelecionado"
+    (licencaEnviada)="handleLicencaEnviada($event)"
+  ></app-solicitar-licenca>
+</div>

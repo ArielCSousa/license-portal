@@ -1,0 +1,56 @@
+<ds-page-title
+  class="titulo-licencas"
+  [title]="'Suas Licenças'"
+></ds-page-title>
+
+<ds-button
+  color="primary"
+  icon="mdi mdi-plus"
+  (click)="irParaSelecaoProdutos()"
+>
+  Nova Licença</ds-button
+>
+<ds-button color="danger" icon="mdi mdi-danger" (click)="limparTabela()"
+  >🗑️ Limpar Tabela</ds-button
+>
+
+<ds-table
+  [tableData]="pagedLicencas"
+  [tableColumns]="tableColumns"
+  [hasActions]="true"
+  [dropdownOptions]="dropdownActions"
+  [showMoreButton]="true"
+  [showMoreDisabled]="!hasMoreData()"
+  (actionClick)="handleAction($event)"
+  (showMore)="loadMore()"
+>
+</ds-table>
+
+<!-- Quando não houver nenhuma licença -->
+<div *ngIf="licencas.length === 0" class="mensagem-final">
+  <p>🗙 Não há licenças para serem exibidas.</p>
+</div>
+
+<div *ngIf="licencas.length > 0 && !hasMoreData()" class="mensagem-final">
+  <p>✔ Exibindo todos os itens da lista.</p>
+</div>
+
+<ds-modal #modalMotivo [modalSize]="'lg'">
+  <div class="titulo_modal">
+    <p><strong>Motivo da reprovação: </strong> teste</p>
+    <p>Atributos errados</p>
+  </div>
+</ds-modal>
+
+<ds-modal #modalAttributes [modalSize]="'xl'">
+  <ds-page-title
+    [title]="'Atributos da Licença - ' + licencaSelecionada?.produto"
+  ></ds-page-title>
+  <!-- <div>
+    <p><strong>Atributos da licença</strong></p>
+  </div> -->
+  <ds-table
+    [tableData]="attributesTableData"
+    [tableColumns]="attributesTableColumns"
+  ></ds-table>
+</ds-modal>

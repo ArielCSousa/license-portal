@@ -1,0 +1,51 @@
+.titulo_modal {
+  font-size: medium;
+}
+
+// .botao-adicionar-licenca{
+//   padding: 18px;
+//   padding-inline: 45px;
+//   font-weight: bold;
+//   background-color: #b1cffc80;
+//   border: solid 1px #86b5fcc4;
+//   border-radius: 10px;
+//   margin-bottom: 1.5rem;
+// }
+
+.mensagem-final {
+  margin-top: 1rem;
+  text-align: center;
+  color: #474747;
+  font-weight: bold;
+}
+
+
+
+.botao-limpar-licencas {
+  background-color: #f74f25; /* Vermelho suave */
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+  margin-left: 12px; /* Espaço do botão +Licença */
+}
+
+.botao-limpar-licencas:hover {
+  background-color: #e53935; /* Mais escuro ao passar o mouse */
+}
+
+.alerta-topo {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  background-color: #fdecea; // tom suave de vermelho
+  color: #611a15; // tom escuro de vermelho para texto
+  padding: 12px 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  z-index: 9999;
+  font-weight: 500;
+}

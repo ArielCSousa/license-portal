@@ -1,0 +1,31 @@
+<ds-page-title title="Gerenciar Licenças"></ds-page-title>
+
+<input
+  type="text"
+  [(ngModel)]="termoBusca"
+  (input)="filtrarLicencas()"
+  placeholder="Buscar licença por CNPJ, produto, MAC..."
+  class="campo-busca"
+/>
+<button *ngIf="termoBusca" class="botao-limpar" (click)="limparBusca()">
+  ✖ Limpar busca
+</button>
+
+<ds-table
+  *ngIf="licencasFiltradas.length > 0"
+  [tableData]="licencasFiltradas"
+  [tableColumns]="tableColumns"
+  [hasActions]="false"
+>
+</ds-table>
+
+<div
+  *ngIf="termoBusca && licencasFiltradas.length === 0"
+  class="mensagem-final"
+>
+  <p>Nenhuma licença encontrada para o termo informado.</p>
+</div>
+
+<div *ngIf="!termoBusca" class="mensagem-final">
+  <p>Digite algo para buscar uma licença.</p>
+</div>
