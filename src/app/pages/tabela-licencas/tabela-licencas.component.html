@@ -10,9 +10,9 @@
 >
   Nova Licença</ds-button
 >
-<ds-button color="danger" icon="mdi mdi-danger" (click)="limparTabela()"
+<!-- <ds-button color="danger" icon="mdi mdi-danger" (click)="limparTabela()"
   >🗑️ Limpar Tabela</ds-button
->
+> -->
 
 <ds-table
   [tableData]="pagedLicencas"
@@ -35,10 +35,9 @@
   <p>✔ Exibindo todos os itens da lista.</p>
 </div>
 
-<ds-modal #modalMotivo [modalSize]="'lg'">
+<ds-modal #modalMotivo [modalSize]="'md'">
   <div class="titulo_modal">
-    <p><strong>Motivo da reprovação: </strong> teste</p>
-    <p>Atributos errados</p>
+    <p>{{ mensagemModalStatus }}</p>
   </div>
 </ds-modal>
 

@@ -23,13 +23,7 @@ export const routes: Routes = [
         (m) => m.ProductSelectorComponent
       ),
   },
-  {
-    path: 'gerenciar-licencas',
-    loadComponent: () =>
-      import('./gerenciar-licencas/gerenciar-licencas.component').then(
-        (m) => m.GerenciarLicencasComponent
-      ),
-  },
+
   {
     path: '',
     redirectTo: 'licencas',

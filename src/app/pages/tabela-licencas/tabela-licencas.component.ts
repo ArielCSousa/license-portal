@@ -30,7 +30,8 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class TabelaLicencasComponent {
   //mensagem de aviso quando o modal 'motivo' não puder se aberto por causa do status diferente de 'reprovado(a)'
-  mensagemAviso: string | null = null;
+  // mensagemAviso: string | null = null;
+  mensagemModalStatus: string = '';
 
   //essas variaveis permitem abrir os modais do html que estão utilizando #modalAttributtes e #modalMotivo
   @ViewChild('modalAttributes') modalAttributes!: ModalComponent;
@@ -59,21 +60,23 @@ export class TabelaLicencasComponent {
   ) {}
 
   ngOnInit(): void {
-    // incrição no observable do serviço que emite a lista de licenças
     this.licencaService.licencas$
-      .pipe(takeUntil(this.destroy$)) // unsubscribe automático ao destruir componente(ir para outra tela)
+      .pipe(takeUntil(this.destroy$))
       .subscribe((lista) => {
-        this.licencas = lista; // atualiza a lista local de licenças
+        this.licencas = lista.map((licenca) => {
+          const statusLower = licenca.status.toLowerCase();
+          let emoji = '';
+          if (statusLower.includes('aprovado')) emoji = '🟢';
+          else if (statusLower.includes('pendente')) emoji = '🟡';
+          else if (statusLower.includes('reprovado')) emoji = '🔴';
+
+          return {
+            ...licenca,
+            statusOriginal: licenca.status, // mantém o status original para lógica
+            statusExibicao: `${emoji} ${licenca.status}`, // campo novo para mostrar na tabela
+          };
+        });
       });
-    /*
-      licencaService.licencas$ é um Observable com as licenças.
-
-      .subscribe(...) escuta as atualizações e guarda a lista na variável licencas.
-
-      takeUntil(this.destroy$) faz com que a assinatura se encerre quando o componente for destruído, evitando vazamento de memória.
-
-      >>>Usar takeUntil com um Subject como destroy$ é uma boa prática recomendada pelo Angular para componentes que fazem subscribe().
-       */
   }
 
   ngOnDestroy(): void {
@@ -83,7 +86,7 @@ export class TabelaLicencasComponent {
 
   // Colunas da tabela principal de licenças
   tableColumns = [
-    { header: 'Status', field: 'status' },
+    { header: 'Status', field: 'statusExibicao' },
     { header: 'ID', field: 'id' },
     { header: 'CNPJ', field: 'cnpjFaturamento' },
     { header: 'Produto', field: 'produto' },
@@ -140,29 +143,6 @@ export class TabelaLicencasComponent {
     this.modalAttributes.open();
   }
 
-  // condicionarDropdown(licenca: Licenca) {
-  //   const status = licenca.status.toLowerCase();
-  //   const motivoExiste = this.dropdownActions.some(
-  //     (opcao) => opcao.action === 'motivo'
-  //   );
-
-  //   if (status === 'reprovada' || status === 'reprovado') {
-  //     if (!motivoExiste) {
-  //       this.dropdownActions.push({
-  //         text: 'Motivo de reprovação',
-  //         action: 'motivo',
-  //         icon: 'mdi mdi-list-status',
-  //       });
-  //     }
-  //   } else {
-  //     if (motivoExiste) {
-  //       this.dropdownActions = this.dropdownActions.filter(
-  //         (opcao) => opcao.action !== 'motivo'
-  //       );
-  //     }
-  //   }
-  // }
-
   // Handler para ações da tabela
   handleAction(event: { action: string; row: any }) {
     const { action, row } = event; // extraindo propriedade de um objeto
@@ -197,20 +177,24 @@ export class TabelaLicencasComponent {
     } else if (action === 'motivo') {
       const status = row.status.toLowerCase();
 
-      if (status !== 'reprovada' && status !== 'reprovado') {
-        this.mostrarAviso();
-
-        // // Oculta a mensagem depois de 3 segundos
-        // setTimeout(() => {
-        //   this.mensagemAviso = null;
-        // }, 3000);
-
+      if (status === 'reprovada' || status === 'reprovado') {
+        this.mensagemModalStatus =
+          'Motivo da reprovação: ' +
+          (row.dados?.motivo || 'Motivo não informado');
+        this.modalMotivo.open();
         return;
       }
 
-      this.modalMotivo.open();
+      if (status === 'pendente') {
+        this.mensagemModalStatus = '⏳ Aguarde análise da sua solicitação.';
+      } else if (status === 'aprovada' || status === 'aprovado') {
+        this.mensagemModalStatus =
+          '✔️ Opção disponível apenas para licenças reprovadas.';
+      } else {
+        this.mensagemModalStatus = 'Status desconhecido.';
+      }
 
-      //
+      this.modalMotivo.open();
     } else if (action === 'copiar') {
       // Copia produto e CNPJ
       const texto = `Produto: ${row.produto}\nCNPJ: ${row.cnpjFaturamento}`;
